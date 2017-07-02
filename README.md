@@ -30,5 +30,5 @@ python 2_move.py <FEN string>
 
 ```
 cd <coding challenge code directory>
-python stretch.py
+python stretch.py <FEN string>
 ```
