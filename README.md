@@ -1,8 +1,8 @@
 # Instructions
 
-## Installation
+The following instructions assume that the python package virtualenvwrapper is already installed, and that the 'python' command points to a Python 3 interpreter.
 
-The following instructions assume that the python package virtualenvwrapper is already installed.
+## Installation
 
 Before doing anything else, create a virtual environment to run the programs in, and install the required packages:
 
