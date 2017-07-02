@@ -4,7 +4,7 @@ class BoardSetup:
         ...
 
     def __str__(self):
-        ...
+        return self.fen
 
     @property
     def fen(self):
