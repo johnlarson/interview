@@ -77,7 +77,26 @@ class BoardSetup:
 
     @property
     def board_text(self):
-        return ''
+        ret = ''
+        ret += self._get_enclosing_line()
+        row_lines = [self._get_row_line(row) for row in self.ROWS]
+        row_lines = self._get_divider_line().join(row_lines)
+        ret += row_lines
+        ret += self._get_enclosing_line()
+        ret += self._get_col_label_line()
+        return ret
+
+    def _get_enclosing_line(self):
+        return '  ---------------------------------\n'
+
+    def _get_row_line(self, row):
+        return '\n'
+
+    def _get_divider_line(self):
+        return '  |-------------------------------|\n'
+
+    def _get_col_label_line(self):
+        return '    a   b   c   d   e   f   g   h\n'
 
     def take_turn(self):
         ...
