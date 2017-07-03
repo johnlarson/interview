@@ -100,16 +100,29 @@ class BoardSetup:
         return ''
 
     def _castling_to_string(self):
-        return ''
+        ret = ''
+
+        if self._can_castle_white_king:
+            ret += 'K'
+        if self._can_castle_white_queen:
+            ret += 'Q'
+        if self._can_castle_black_king:
+            ret += 'k'
+        if self._can_castle_black_queen:
+            ret += 'q'
+
+        if ret == '':
+            ret = '-'
+        return ret
 
     def _en_passant_to_string(self):
-        return ''
+        return self._en_passant if self._en_passant else '-'
 
     def _halfmove_to_string(self):
-        return ''
+        return str(self._halfmove_clock)
 
     def _fullmove_to_string(self):
-        return ''
+        return str(self._fullmove_number)
 
     @property
     def board_text(self):
