@@ -100,7 +100,7 @@ class BoardSetup:
         rows = [self._row_to_fen(row) for row in self.ROWS]
         return '/'.join(rows)
 
-    def _row_to_fen(row):
+    def _row_to_fen(self, row):
         ret = ''
         empty_count = 0
         for col in self.COLS:
@@ -112,6 +112,8 @@ class BoardSetup:
                     ret += str(empty_count)
                     empty_count = 0
                 ret += piece
+        if empty_count > 0:
+            ret += str(empty_count)
         return ret
 
     def _castling_to_fen(self):
