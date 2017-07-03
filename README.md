@@ -1,6 +1,6 @@
 # Instructions
 
-The following instructions assume that the python package virtualenvwrapper is already installed, and that the 'python' command points to a Python 3 interpreter.
+The following instructions assume that the python package virtualenvwrapper is installed for Python 3.
 
 ## Installation
 
@@ -26,7 +26,7 @@ cd <coding challenge code directory>
 python 2_move.py <FEN string>
 ```
 
-## Running stretch code (combined), if implemented
+## Running stretch code (combined)
 
 ```
 cd <coding challenge code directory>
