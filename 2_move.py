@@ -3,8 +3,8 @@ from sys import argv
 from boardsetup import BoardSetup
 
 
-def main(fen):
-    board = BoardSetup(fen)
+def main(fen_file):
+    board = BoardSetup(fen_file)
     board.take_turn()
     print(board.fen)
 
