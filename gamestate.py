@@ -1,7 +1,10 @@
-import requests
+import json
 import enum
 from enum import Enum
 from urllib.parse import quote_plus
+from collections import OrderedDict
+
+import requests
 
 
 class GameState:
@@ -170,12 +173,17 @@ class GameState:
 
     def take_turn(self):
         suggested_move = self._get_suggested_move()
+        print(suggested_move)
         self._make_move(*suggested_move)
 
     def _get_suggested_move(self):
         body = requests.get('https://syzygy-tables.info/api/v2',
                             params={'fen': self.fen})
-        return tuple('a2a3')
+        json_dict = json.loads(body.text, object_pairs_hook=OrderedDict)
+        move_str = list(json_dict['moves'].keys())[0]
+        return tuple(move_str)
 
     def _make_move(self, col_0, row_0, col_1, row_1):
-        ...
+        piece = self._get_by_col_and_row(col_0, row_0)
+        self._set_at_col_and_row(col_0, row_0, self.EMPTY)
+        self._set_at_col_and_row(col_1, row_1, piece)
