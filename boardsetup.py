@@ -91,15 +91,30 @@ class BoardSetup:
 
     @property
     def fen(self):
-        parts = [self._board_to_string(), self._player,
-                 self._castling_to_string(), self._en_passant_to_string(),
-                 self._halfmove_to_string(), self._fullmove_to_string()]
+        parts = [self._board_to_fen(), self._player, self._castling_to_fen(),
+                 self._en_passant_to_fen(), self._halfmove_to_fen(),
+                 self._fullmove_to_fen()]
         return ' '.join(parts)
 
-    def _board_to_string(self):
-        return ''
+    def _board_to_fen(self):
+        rows = [self._row_to_fen(row) for row in self.ROWS]
+        return '/'.join(rows)
 
-    def _castling_to_string(self):
+    def _row_to_fen(row):
+        ret = ''
+        empty_count = 0
+        for col in self.COLS:
+            piece = self._get_by_col_and_row(col, row)
+            if piece == self.EMPTY:
+                empty_count += 1
+            else:
+                if empty_count > 0:
+                    ret += str(empty_count)
+                    empty_count = 0
+                ret += piece
+        return ret
+
+    def _castling_to_fen(self):
         ret = ''
 
         if self._can_castle_white_king:
@@ -115,13 +130,13 @@ class BoardSetup:
             ret = '-'
         return ret
 
-    def _en_passant_to_string(self):
+    def _en_passant_to_fen(self):
         return self._en_passant if self._en_passant else '-'
 
-    def _halfmove_to_string(self):
+    def _halfmove_to_fen(self):
         return str(self._halfmove_clock)
 
-    def _fullmove_to_string(self):
+    def _fullmove_to_fen(self):
         return str(self._fullmove_number)
 
     @property
