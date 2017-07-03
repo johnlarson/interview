@@ -18,7 +18,7 @@ class BoardSetup:
         self._parse_fullmove_number(fen_list[5])
 
     def _parse_board(self, board_str):
-        self.board = {}
+        self._board = {}
         row_index = 0
         col_index = 0
         for char in board_str:
@@ -43,9 +43,9 @@ class BoardSetup:
     def _set_by_indices(self, row_index, col_index, value):
         row = self.ROWS[row_index]
         col = self.COLS[col_index]
-        if not col in self.board.keys():
-            self.board[col] = {}
-        self.board[col][row] = value
+        if not col in self._board.keys():
+            self._board[col] = {}
+        self._board[col][row] = value
 
     def _parse_turn(self, turn_str):
         ...
@@ -63,10 +63,13 @@ class BoardSetup:
         ...
 
     def _piece_by_col_and_row(self, col, row):
-        return self.board[col][row]
+        return self._board[col][row]
 
     def _piece_by_postion(self, pos):
         return self._piece_by_col_and_row(pos[0], pos[1])
+
+    def _get_row(self, row):
+        return [self._board[col][row] for col in self.COLS]
 
     def __str__(self):
         return self.fen
@@ -90,7 +93,11 @@ class BoardSetup:
         return '  ---------------------------------\n'
 
     def _get_row_line(self, row):
-        return '\n'
+        ret = ''
+        to_join = [row] + self._get_row(row)
+        ret += ' | '.join(to_join)
+        ret += ' |\n'
+        return ret
 
     def _get_divider_line(self):
         return '  |-------------------------------|\n'
