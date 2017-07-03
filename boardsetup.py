@@ -1,4 +1,6 @@
 import requests
+import enum
+from enum import Enum
 from urllib.parse import quote_plus
 
 
@@ -52,25 +54,34 @@ class BoardSetup:
         self._board[col][row] = value
 
     def _parse_turn(self, turn_str):
-        ...
+        self._player = turn_str
 
     def _parse_castling(self, castling_str):
-        ...
+        self._can_castle_white_king = 'K' in castling_str
+        self._can_castle_white_queen = 'Q' in castling_str
+        self._can_castle_black_king = 'k' in castling_str
+        self._can_castle_black_queen = 'q' in castling_str
 
     def _parse_en_passant(self, en_passant_str):
-        ...
+        self._en_passant = None if en_passant_str == '-' else en_passant_str
 
     def _parse_halfmove_clock(self, halfmove_str):
-        ...
+        self._halfmove_clock = int(halfmove_str)
 
     def _parse_fullmove_number(self, fullmove_str):
-        ...
+        self._fullmove_number = int(fullmove_str)
 
-    def _piece_by_col_and_row(self, col, row):
+    def _get_by_col_and_row(self, col, row):
         return self._board[col][row]
 
-    def _piece_by_postion(self, pos):
-        return self._piece_by_col_and_row(pos[0], pos[1])
+    def _get_by_postion(self, pos):
+        return self._get_by_col_and_row(pos[0], pos[1])
+
+    def _set_at_col_and_row(self, col, row, val):
+        self._board[col][row] = val
+
+    def _set_at_position(self, pos, val):
+        self._set_by_col_and_row(pos[0], pos[1])
 
     def _get_row(self, row):
         return [self._board[col][row] for col in self.COLS]
