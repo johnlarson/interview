@@ -91,6 +91,24 @@ class BoardSetup:
 
     @property
     def fen(self):
+        parts = [self._board_to_string(), self._player,
+                 self._castling_to_string(), self._en_passant_to_string(),
+                 self._halfmove_to_string(), self._fullmove_to_string()]
+        return ' '.join(parts)
+
+    def _board_to_string(self):
+        return ''
+
+    def _castling_to_string(self):
+        return ''
+
+    def _en_passant_to_string(self):
+        return ''
+
+    def _halfmove_to_string(self):
+        return ''
+
+    def _fullmove_to_string(self):
         return ''
 
     @property
