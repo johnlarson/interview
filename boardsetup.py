@@ -1,3 +1,7 @@
+import requests
+from urllib.parse import quote_plus
+
+
 class BoardSetup:
     ROWS = ['8', '7', '6', '5', '4', '3', '2', '1']
     COLS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -106,10 +110,13 @@ class BoardSetup:
         return '    a   b   c   d   e   f   g   h\n'
 
     def take_turn(self):
-        ...
+        suggested_move = self._get_suggested_move()
+        self._make_move(*suggested_move)
 
     def _get_suggested_move(self):
-        return ''
+        body = requests.get('https://syzygy-tables.info/api/v2',
+                            params={'fen': self.fen})
+        return tuple('a2a3')
 
-    def _make_move(self, move):
+    def _make_move(self, col_0, row_0, col_1, row_1):
         ...
