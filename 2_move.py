@@ -1,12 +1,12 @@
 from sys import argv
 
-from boardsetup import BoardSetup
+from gamestate import GameState
 
 
 def main(fen_file):
-    board = BoardSetup(fen_file)
-    board.take_turn()
-    print(board.fen)
+    game_state = GameState(fen_file)
+    game_state.take_turn()
+    print(game_state.fen)
 
 
 main(argv[1])

@@ -1,11 +1,11 @@
 from sys import argv
 
-from boardsetup import BoardSetup
+from gamestate import GameState
 
 
 def main(fen_file):
     print()
-    print(BoardSetup(fen_file).board_text)
+    print(GameState(fen_file).board_text)
     print()
 
 

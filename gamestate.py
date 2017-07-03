@@ -4,7 +4,7 @@ from enum import Enum
 from urllib.parse import quote_plus
 
 
-class BoardSetup:
+class GameState:
     ROWS = ['8', '7', '6', '5', '4', '3', '2', '1']
     COLS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
     EMPTY = ' '
