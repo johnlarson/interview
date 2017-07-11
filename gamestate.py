@@ -17,7 +17,7 @@ class GameState:
     # with a single space character.
     EMPTY = ' '
 
-    def __init__(self, fen_file_path):
+    def __init__(self, fen_file_path=None):
         """
         Constructor for GameState class
 
@@ -25,15 +25,19 @@ class GameState:
         fen_file_path -- the path to the FEN file from which the
         GameState object will be initialized.
         """
-        self._parse_fen_file(fen_file_path)
+        if fen_file_path:
+            with open(fen_file_path) as fen_file:
+                fen_str = fen_file.read()
+            self._parse_fen_str(fen_str)
+        else:
+            start = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+            self._parse_fen_str(start)
 
-    def _parse_fen_file(self, fen_file_path):
+    def _parse_fen_str(self, fen_str):
         """
         Parse the given FEN file and load provided information into the
         GameState object.
         """
-        with open(fen_file_path) as fen_file:
-            fen_str = fen_file.read()
         fen_list = fen_str.split()
         self._parse_board(fen_list[0])
         self._parse_turn(fen_list[1])
@@ -43,7 +47,7 @@ class GameState:
         self._parse_fullmove_number(fen_list[5])
 
     def _parse_board(self, board_str):
-        self._board = {}
+        self.board = {}
         row_index = 0
         col_index = 0
         for char in board_str:
@@ -68,25 +72,25 @@ class GameState:
                     col_index += 1
 
     def _parse_turn(self, turn_str):
-        self._player = turn_str
+        self.player = turn_str
 
     def _parse_castling(self, castling_str):
-        self._can_castle_white_king = 'K' in castling_str
-        self._can_castle_white_queen = 'Q' in castling_str
-        self._can_castle_black_king = 'k' in castling_str
-        self._can_castle_black_queen = 'q' in castling_str
+        self.castle_white_king = 'K' in castling_str
+        self.castle_white_queen = 'Q' in castling_str
+        self.castle_black_king = 'k' in castling_str
+        self.castle_black_queen = 'q' in castling_str
 
     def _parse_en_passant(self, en_passant_str):
         if en_passant_str == '-':
-            self._en_passant = None
+            self.en_passant = None
         else:
-            self._en_passant = Tuple(en_passant_str)
+            self.en_passant = Tuple(en_passant_str)
 
     def _parse_halfmove_clock(self, halfmove_str):
-        self._halfmove_clock = int(halfmove_str)
+        self.halfmove_clock = int(halfmove_str)
 
     def _parse_fullmove_number(self, fullmove_str):
-        self._fullmove_number = int(fullmove_str)
+        self.fullmove_number = int(fullmove_str)
 
     def _get_piece(self, col, row):
         """
@@ -99,7 +103,7 @@ class GameState:
         piece at c3, then `game_state._get_piece('c', '3')` returns
         `' '`.
         """
-        return self._board[col][row]
+        return self.board[col][row]
 
     def _set_piece(self, col, row, val):
         """
@@ -112,9 +116,9 @@ class GameState:
         row -- the row of the square.
         val -- the string value to store on the square.
         """
-        if not col in self._board.keys():
-            self._board[col] = {}
-        self._board[col][row] = val
+        if not col in self.board.keys():
+            self.board[col] = {}
+        self.board[col][row] = val
 
     def __str__(self):
         return self.fen
@@ -122,7 +126,7 @@ class GameState:
     @property
     def fen(self):
         """Property. The FEN representation of the GameState object."""
-        parts = [self._board_to_fen(), self._player, self._castling_to_fen(),
+        parts = [self._board_to_fen(), self.player, self._castling_to_fen(),
                  self._en_passant_to_fen(), self._halfmove_to_fen(),
                  self._fullmove_to_fen()]
         return ' '.join(parts)
@@ -158,13 +162,13 @@ class GameState:
     def _castling_to_fen(self):
         ret = ''
 
-        if self._can_castle_white_king:
+        if self.castle_white_king:
             ret += 'K'
-        if self._can_castle_white_queen:
+        if self.castle_white_queen:
             ret += 'Q'
-        if self._can_castle_black_king:
+        if self.castle_black_king:
             ret += 'k'
-        if self._can_castle_black_queen:
+        if self.castle_black_queen:
             ret += 'q'
 
         if ret == '':
@@ -172,13 +176,13 @@ class GameState:
         return ret
 
     def _en_passant_to_fen(self):
-        return ''.join(self._en_passant) if self._en_passant else '-'
+        return ''.join(self.en_passant) if self.en_passant else '-'
 
     def _halfmove_to_fen(self):
-        return str(self._halfmove_clock)
+        return str(self.halfmove_clock)
 
     def _fullmove_to_fen(self):
-        return str(self._fullmove_number)
+        return str(self.fullmove_number)
 
     @property
     def board_text(self):
@@ -215,7 +219,7 @@ class GameState:
         Returns a list of piece values for all squares in the given row,
         in order from column a to column h.
         """
-        return [self._board[col][row] for col in self.COLS]
+        return [self.board[col][row] for col in self.COLS]
 
     def _get_divider_line(self):
         """

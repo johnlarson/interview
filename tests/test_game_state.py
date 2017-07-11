@@ -1,12 +1,11 @@
 from unittest import TestCase
 
+from gamestate import GameState
+
+
 
 class InitTests(TestCase):
     """Unit tests for GameState.__init__()"""
-
-    def test_valid_input(self):
-        """Should correctly parse a valid fen file."""
-        ...
 
     def test_no_fen_file_path(self):
         """
@@ -14,61 +13,62 @@ class InitTests(TestCase):
         """
         ...
 
-    def test_fen_file_does_not_exist(self):
-        """
-        If no fen file exists at provided path, should raise
-        FENFileDoesNotExistError.
-        """
+
+class ParseFenStrTests(TestCase):
+    """Tests GameState._parse_fen_str()."""
+
+    def test_valid_input(self):
+        """Should correctly parse a valid fen string."""
         ...
 
-    def test_invalid_fen_file(self):
+    def test_invalid_fen_string(self):
         """
-        If no fen file exists at the provided file path, should raise
+        If fen string is not valid fen, should raise
         InvalidFENFileError.
         """
         ...
 
     def test_parse_positions(self):
         """Should correctly parse positions of pieces on board."""
+        ...
 
     def test_whites_turn(self):
         """
-        Tests the parsing of the turn field in the FEN file when
-        it is white player's turn.
+        Tests the parsing of the turn field in the FEN string when it is
+        white player's turn.
         """
         ...
 
     def test_blacks_turn(self):
         """
-        Tests the parsing of the turn field in the FEN file when
-        it is black player's turn.
+        Tests the parsing of the turn field in the FEN string when it is
+        black player's turn.
         """
         ...
 
     def test_castling_all(self):
         """
-        Tests the parsing of castling when all kings and queens can be
-        castled.
+        Tests the parsing of castling when both kings can be castled
+        with either rook.
         """
         ...
 
     def test_castling_some(self):
         """
-        Tests the parsing of castling when some kings and queens can be
-        castled.
+        Tests the parsing of castling when some castling options are
+        still open.
         """
         ...
 
     def test_castling_none(self):
         """
-        Tests the parsing of castling when no kings or queens can be
-        castled.
+        Tests the parsing of castling when neither king can be castled.
         """
         ...
 
     def test_en_passant(self):
         """
-        Should correctly parse when FEN file contains an en passant
+        Should correctly parse when FEN string contains an en passant
         position.
         """
         ...
@@ -124,22 +124,22 @@ class FenTests(TestCase):
 
     def test_castling_all(self):
         """
-        Should return correct description of castling when all kings and
-        queens are castleable.
+        Should return correct description of castling when both kings
+        can castle with either rook.
         """
         ...
 
     def test_castling_some(self):
         """
-        Should return correct description of castling when some kings
-        and queens are castleable.
+        Should return correct description of castling when some but not
+        all castling moves are open.
         """
         ...
 
     def test_castling_none(self):
         """
-        Should return correct description of castling when no kings or
-        queens are castleable.
+        Should return correct description of castling when neither king
+        can be castled.
         """
         ...
 
@@ -189,6 +189,10 @@ class TakeTurnTests(TestCase):
         """Should make move suggested by api."""
         ...
 
+
+class MakeMoveTests(TestCase):
+    """Tests GameState._make_move()"""
+
     def test_correctly_handles_capturing(self):
         """
         When one piece lands on another, the other should be removed
@@ -201,14 +205,20 @@ class TakeTurnTests(TestCase):
         When white makes a move, the turn tracker should be set to
         black's turn.
         """
-        ...
+        game = GameState()
+        game.player = 'w'
+        game._make_move('a', '1', 'a', '2')
+        self.assertEqual(game.player, 'b')
 
     def test_black_turn_to_white(self):
         """
         When black makes a move, the turn tracker should be set to
         white's turn.
         """
-        ...
+        game = GameState()
+        game.player = 'b'
+        game._make_move('a', '1', 'a', '2')
+        self.assertEqual(game.player, 'w')
 
     def test_castling_move_white_king(self):
         """Moving white king should disable all white castling."""
