@@ -348,37 +348,65 @@ class MakeMoveTests(TestCase):
         game._make_move('a2a3')
         self.assertEqual(game.en_passant, None)
 
-    def test_halfmove_clock_increments_after_player_makes_move(self):
+    def test_halfmove_clock_increments_after_white_player_makes_move(self):
         """
-        When a player makes a reversible move, the halfmove clock should
-        be incremented.
+        When either player makes a reversible move, the halfmove clock
+        should be incremented. This tests for moves made by the white
+        player.
         """
-        ...
+        game = GameState()
+        game.board['a']['2'] = 'R'
+        game.halfmove_clock = 3
+        game._make_move('a2a3')
+        self.assertEqual(game.halfmove_clock, 4)
+
+    def test_halfmove_clock_increments_after_black_player_makes_move(self):
+        """
+        When either player makes a reversible move, the halfmove clock
+        should be incremented. This tests for moves made by the black
+        player.
+        """
+        game = GameState()
+        game.board['a']['2'] = 'r'
+        game.halfmove_clock = 3
+        game._make_move('a2a3')
+        self.assertEqual(game.halfmove_clock, 4)
 
     def test_halfmove_clock_resets_on_capture(self):
         """
         When a player captures a piece, the halfmove clock should be
         reset to 0.
         """
-        ...
+        game = GameState()
+        game.board['a']['2'] = 'r'
+        game.board['a']['3'] = 'R'
+        game.halfmove_clock = 3
+        game._make_move('a2a3')
+        self.assertEqual(game.halfmove_clock, 0)
+
 
     def test_halfmove_clock_resets_on_pawn_move(self):
         """
         When a player moves a pawn, the halfmove clock should be reset
         to 0.
         """
-        ...
-
-    def test_halfmove_clock_resets_on_castling(self):
-        """
-        When a player makes a castling move, the halfclock should be
-        reset, as this is an irreversible move (see
-        http://www.open-chess.org/viewtopic.php?f=3&t=2209).
-        """
-        ...
+        game = GameState()
+        game.board['a']['2'] = 'P'
+        game.board['a']['3'] = GameState.EMPTY
+        game.halfmove_clock = 3
+        game._make_move('a2a3')
+        self.assertEqual(game.halfmove_clock, 0)
 
     def test_fullmove_number_increments_when_black_takes_a_turn(self):
-        ...
+        game = GameState()
+        game.player = 'b'
+        game.fullmove_number = 3
+        game._make_move('a2a3')
+        self.assertEqual(game.fullmove_number, 4)
 
     def test_fullmove_number_does_not_increment_when_white_moves(self):
-        ...
+        game = GameState()
+        game.player = 'w'
+        game.fullmove_number = 3
+        game._make_move('a2a3')
+        self.assertEqual(game.fullmove_number, 3)
