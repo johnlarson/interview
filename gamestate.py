@@ -254,3 +254,4 @@ class GameState:
         piece = self._get_piece(col_0, row_0)
         self._set_piece(col_0, row_0, self.EMPTY)
         self._set_piece(col_1, row_1, piece)
+        self.player = 'b' if self.player == 'w' else 'w'
