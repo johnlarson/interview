@@ -238,25 +238,19 @@ class GameState:
         state information to reflect the move.
         """
         suggested_move = self._get_suggested_move()
-        self._make_move(*suggested_move)
+        self._make_move(suggested_move)
 
     def _get_suggested_move(self):
         body = requests.get('https://syzygy-tables.info/api/v2',
                             params={'fen': self.fen})
         json_dict = json.loads(body.text, object_pairs_hook=OrderedDict)
-        move_str = list(json_dict['moves'].keys())[0]
-        return tuple(move_str)
+        return list(json_dict['moves'].keys())[0]
 
-    def _make_move(self, col_0, row_0, col_1, row_1):
+    def _make_move(self, move_str):
         """
         Make the move described by the given columns and rows.
-
-        Arguments:
-        col_0 -- the starting column
-        row_0 -- the starting row
-        col_1 -- the ending column
-        row_1 -- the ending row
         """
+        col_0, row_0, col_1, row_1 = tuple(move_str)
         piece = self._get_piece(col_0, row_0)
         self._set_piece(col_0, row_0, self.EMPTY)
         self._set_piece(col_1, row_1, piece)

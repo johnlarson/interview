@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+import gamestate
 from gamestate import GameState
 
 
@@ -207,7 +208,7 @@ class MakeMoveTests(TestCase):
         """
         game = GameState()
         game.player = 'w'
-        game._make_move('a', '1', 'a', '2')
+        game._make_move('a1a2')
         self.assertEqual(game.player, 'b')
 
     def test_black_turn_to_white(self):
@@ -217,47 +218,88 @@ class MakeMoveTests(TestCase):
         """
         game = GameState()
         game.player = 'b'
-        game._make_move('a', '1', 'a', '2')
+        game._make_move('a1a2')
         self.assertEqual(game.player, 'w')
 
     def test_castling_move_white_king(self):
         """Moving white king should disable all white castling."""
-        ...
+        game = GameState()
+        game.board['e']['1'] = 'K'
+        game.board['e']['2'] = GameState.EMPTY
+        game.castle_white_king = True
+        game.castle_white_queen = True
+        game._make_move('e1e2')
+        self.assertFalse(game.castle_white_king)
+        self.assertFalse(game.castle_white_queen)
 
     def test_castling_move_white_king_side_rook(self):
         """
         Moving white king-side rook should disable it for castling.
         """
-        ...
+        game = GameState()
+        game.board['h']['1'] = 'R'
+        game.board['h']['2'] = GameState.EMPTY
+        game.castle_white_king = True
+        game._make_move('h1h2')
+        self.assertFalse(game.castle_white_king)
 
     def test_castling_move_white_queen_side_rook(self):
         """
         Moving white queen-side rook should disable it for castling.
         """
-        ...
+        game = GameState()
+        game.board['a']['1'] = 'R'
+        game.board['a']['2'] = GameState.EMPTY
+        game.castle_white_queen = True
+        game._make_move('a1a2')
+        self.assertFalse(game.castle_white_queen)
 
     def test_castling_move_black_king(self):
         """Moving black king should disable all black castling."""
-        ...
+        game = GameState()
+        game.board['e']['8'] = 'k'
+        game.board['e']['7'] = GameState.EMPTY
+        game.castle_black_king = True
+        game.castle_black_queen = True
+        game._make_move('e8e7')
+        self.assertFalse(game.castle_black_king)
+        self.assertFalse(game.castle_black_queen)
 
     def test_castling_move_black_king_side_rook(self):
         """
         Moving black king-side rook should disable it for castling.
         """
-        ...
+        game = GameState()
+        game.board['h']['8'] = 'r'
+        game.board['h']['7'] = GameState.EMPTY
+        game.castle_black_king = True
+        game._make_move('h8h7')
+        self.assertFalse(game.castle_black_king)
 
     def test_castling_move_black_queen_side_rook(self):
         """
         Moving black queen-side rook should disable it for castling.
         """
-        ...
+        game = GameState()
+        game.board['a']['8'] = 'r'
+        game.board['a']['7'] = GameState.EMPTY
+        game.castle_black_queen = True
+        game._make_move('a8a7')
+        self.assertFalse(game.castle_black_queen)
 
     def test_castling_move_other_piece(self):
         """
         Moving any piece other than a king or rook should not disable
         castling.
         """
-        ...
+        game = GameState()
+        game.board['a']['8'] = 'b'
+        game.board['b']['2'] = GameState.EMPTY
+        game.castle_black_king = True
+        game.castle_black_queen = True
+        game._make_move('a1b2')
+        self.assertTrue(game.castle_black_king)
+        self.assertTrue(game.castle_black_queen)
 
     def test_en_passant_pawn_moves_two_squares(self):
         """
