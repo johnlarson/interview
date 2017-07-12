@@ -256,6 +256,7 @@ class GameState:
         self._set_piece(col_0, row_0, self.EMPTY)
         self._set_piece(col_1, row_1, piece)
         self._toggle_player()
+        self._update_en_passant(col_0, row_0, col_1, row_1)
 
     def _toggle_player(self):
         self.player = 'b' if self.player == 'w' else 'w'
@@ -290,3 +291,16 @@ class GameState:
             self.castle_black_queen = False
         elif col == 'h' and row == '8':
             self.castle_black_king = False
+
+    def _update_en_passant(self, col_0, row_0, col_1, row_1):
+        moved_piece = self._get_piece(col_1, row_1)
+        row_0 = int(row_0)
+        row_1 = int(row_1)
+        if moved_piece == 'P' and row_1 == row_0 + 2 and col_0 == col_1:
+            # white player has moved pawn two spaces forward
+            self.en_passant = (col_0, str(row_1 - 1))
+        elif moved_piece == 'p' and row_1 == row_0 - 2 and col_0 == col_1:
+            # black player has moved pawn two spaces forward
+            self.en_passant = (col_0, str(row_1 + 1))
+        else:
+            self.en_passant = None
