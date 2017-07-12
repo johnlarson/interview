@@ -256,6 +256,7 @@ class GameState:
         piece = self._get_piece(col_0, row_0)
         self._set_piece(col_0, row_0, self.EMPTY)
         self._set_piece(col_1, row_1, piece)
+        self._update_fullmove_number()
         self._toggle_player()
         self._update_en_passant(col_0, row_0, col_1, row_1)
 
@@ -315,3 +316,7 @@ class GameState:
             self.halfmove_clock = 0
         else:
             self.halfmove_clock += 1
+
+    def _update_fullmove_number(self):
+        if self.player == 'b':
+            self.fullmove_number += 1
