@@ -251,7 +251,42 @@ class GameState:
         Make the move described by the given columns and rows.
         """
         col_0, row_0, col_1, row_1 = tuple(move_str)
+        self._update_castling(col_0, row_0)
         piece = self._get_piece(col_0, row_0)
         self._set_piece(col_0, row_0, self.EMPTY)
         self._set_piece(col_1, row_1, piece)
+        self._toggle_player()
+
+    def _toggle_player(self):
         self.player = 'b' if self.player == 'w' else 'w'
+
+    def _update_castling(self, col, row):
+        """
+        Update castling status based on where the piece moves from. For
+        checking rooks, the starting square is used instead of the piece
+        type. This is because information on where a rook started is not
+        stored in the GameState data model. If a rook is moved from one
+        of those spaces, that disqualifies the rook from being used in
+        castling. If any other piece is moved from one of those spaces,
+        that means the rook that started there has already been
+        disqualified, so the rook should still be marked as not
+        available for castling.
+
+        Arguments:
+        col -- the starting column of the move to update based on.
+        row -- the starting row of the move to update based on.
+        """
+        if self._get_piece(col, row) == 'K':
+            self.castle_white_king = False
+            self.castle_white_queen = False
+        elif col == 'a' and row == '1':
+            self.castle_white_queen = False
+        elif col == 'h' and row == '1':
+            self.castle_white_king = False
+        elif self._get_piece(col, row) == 'k':
+            self.castle_black_king = False
+            self.castle_black_queen = False
+        elif col == 'a' and row == '8':
+            self.castle_black_queen = False
+        elif col == 'h' and row == '8':
+            self.castle_black_king = False
