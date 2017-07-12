@@ -306,31 +306,47 @@ class MakeMoveTests(TestCase):
         When a pawn moves two spaces, the square behind it should be
         set as the en passant square.
         """
-        ...
+        game = GameState()
+        game.board['a']['2'] = 'P'
+        game._make_move('a2a4')
+        self.assertEqual(game.en_passant, ('a', '3'))
 
     def test_en_passant_only_lasts_one_turn(self):
         """
         Even if there was previously an en passant square, if no pawn
         moved two spaces this turn, en passant should be set to None.
         """
-        ...
+        game = GameState()
+        game.board['a']['1'] = 'R'
+        game.en_passant = ('a', '3')
+        game._make_move('a1a2')
+        self.assertEqual(game.en_passant, None)
 
     def test_en_passant_non_pawn_moves(self):
         """When a non-pawn piece moves, en passant should be None."""
-        ...
+        game = GameState()
+        game.board['a']['1'] = 'R'
+        game._make_move('a1a2')
+        self.assertEqual(game.en_passant, None)
 
     def test_en_passant_non_pawn_moves_two_squares(self):
         """
         Even if a non-pawn moves two spaces, en passant should be None.
         """
-        ...
+        game = GameState()
+        game.board['a']['1'] = 'R'
+        game._make_move('a1a3')
+        self.assertEqual(game.en_passant, None)
 
     def test_en_passant_pawn_moves_one_square(self):
         """
         If pawn moves but it does not move two squares, en passant
         should be None.
         """
-        ...
+        game = GameState()
+        game.board['a']['2'] = 'P'
+        game._make_move('a2a3')
+        self.assertEqual(game.en_passant, None)
 
     def test_halfmove_clock_increments_after_player_makes_move(self):
         """
