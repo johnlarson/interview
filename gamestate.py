@@ -252,6 +252,7 @@ class GameState:
         """
         col_0, row_0, col_1, row_1 = tuple(move_str)
         self._update_castling(col_0, row_0)
+        self._update_halfmove_clock(col_0, row_0, col_1, row_1)
         piece = self._get_piece(col_0, row_0)
         self._set_piece(col_0, row_0, self.EMPTY)
         self._set_piece(col_1, row_1, piece)
@@ -304,3 +305,13 @@ class GameState:
             self.en_passant = (col_0, str(row_1 + 1))
         else:
             self.en_passant = None
+
+    def _update_halfmove_clock(self, col_0, row_0, col_1, row_1):
+        if self._get_piece(col_0, row_0) in ('P', 'p'):
+            # piece moved is a pawn, reset the halfmove clock
+            self.halfmove_clock = 0
+        elif self._get_piece(col_1, row_1) != self.EMPTY:
+            # opponent's piece is captured, reset the halfmove clock
+            self.halfmove_clock = 0
+        else:
+            self.halfmove_clock += 1
