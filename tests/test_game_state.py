@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 import gamestate
 from gamestate import GameState, InvalidFENFileError
@@ -252,20 +253,123 @@ class BoardTextTests(TestCase):
 class TakeTurnTests(TestCase):
     """Tests GameState.take_turn()"""
 
-    def test_makes_suggested_move(self):
+    @patch.object(GameState, '_get_suggested_move', return_value='a2a4')
+    def test_makes_suggested_move(self, mocked):
         """Should make move suggested by api."""
-        ...
+        g = GameState()
+        g.board = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        g.take_turn()
+        expected = """
+  ---------------------------------
+8 | r | n | b | q | k | b | n | r |
+  |-------------------------------|
+7 | p | p |   | p | p | p | p | p |
+  |-------------------------------|
+6 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+5 |   |   | p |   |   |   |   |   |
+  |-------------------------------|
+4 | P |   |   |   | P |   |   |   |
+  |-------------------------------|
+3 |   |   |   |   |   | N |   |   |
+  |-------------------------------|
+2 |   | P | P | P |   | P | P | P |
+  |-------------------------------|
+1 | R | N | B | Q | K | B |   | R |
+  ---------------------------------
+    a   b   c   d   e   f   g   h
+""".strip('\n')  # the outer newlines are only there to make this code readable
+        self.assertEqual(g.board_text, expected)
 
 
 class MakeMoveTests(TestCase):
     """Tests GameState._make_move()"""
+
+    def test_make_basic_move(self):
+        """
+        Should be able to handle moving a piece from one square to another.
+        """
+        g = GameState()
+        g.board = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        g._make_move('a2a4')
+        expected = """
+  ---------------------------------
+8 | r | n | b | q | k | b | n | r |
+  |-------------------------------|
+7 | p | p |   | p | p | p | p | p |
+  |-------------------------------|
+6 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+5 |   |   | p |   |   |   |   |   |
+  |-------------------------------|
+4 | P |   |   |   | P |   |   |   |
+  |-------------------------------|
+3 |   |   |   |   |   | N |   |   |
+  |-------------------------------|
+2 |   | P | P | P |   | P | P | P |
+  |-------------------------------|
+1 | R | N | B | Q | K | B |   | R |
+  ---------------------------------
+    a   b   c   d   e   f   g   h
+""".strip('\n')  # the outer newlines are only there to make this code readable
+        self.assertEqual(g.board_text, expected)
 
     def test_correctly_handles_capturing(self):
         """
         When one piece lands on another, the other should be removed
         from the board, and moving piece should replace it.
         """
-        ...
+        g = GameState()
+        g.board = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        g._make_move('e4d5')
+        expected = """
+  ---------------------------------
+8 | r | n | b | q | k | b | n | r |
+  |-------------------------------|
+7 | p | p |   |   | p | p | p | p |
+  |-------------------------------|
+6 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+5 |   |   | p | P |   |   |   |   |
+  |-------------------------------|
+4 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+3 |   |   |   |   |   | N |   |   |
+  |-------------------------------|
+2 | P | P | P | P |   | P | P | P |
+  |-------------------------------|
+1 | R | N | B | Q | K | B |   | R |
+  ---------------------------------
+    a   b   c   d   e   f   g   h
+""".strip('\n')  # the outer newlines are only there to make this code readable
+        self.assertEqual(g.board_text, expected)
 
     def test_white_turn_to_black(self):
         """
