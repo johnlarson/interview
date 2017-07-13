@@ -4,7 +4,6 @@ import gamestate
 from gamestate import GameState
 
 
-
 class InitTests(TestCase):
     """Unit tests for GameState.__init__()"""
 
@@ -13,12 +12,23 @@ class InitTests(TestCase):
         If no fen file is provided, should initialize game state to
         match start-of-game state.
         """
-        ...
-
+        g = GameState()
+        expected = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        self.assertEqual(g.board, expected)
 
     def test_invalid_file_path(self):
         """If file path is invalid, should raise FileNotFoundError."""
-        ...
+        with self.assertRaises(FileNotFoundError):
+            GameState('tests/fen/idontexist.fen')
 
 
 class ParseFenStrTests(TestCase):
