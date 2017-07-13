@@ -12,6 +12,7 @@ Usage: python stretch.py <fen-file-path>
 from sys import argv
 
 from gamestate import GameState
+from script_utils import run_fen_script
 
 
 def main(fen_file):
@@ -24,4 +25,4 @@ def main(fen_file):
     print()
 
 
-main(argv[1])
+run_fen_script(main)

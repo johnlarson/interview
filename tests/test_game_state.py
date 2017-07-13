@@ -16,6 +16,11 @@ class InitTests(TestCase):
         ...
 
 
+    def test_invalid_file_path(self):
+        """If file path is invalid, should raise FileNotFoundError."""
+        ...
+
+
 class ParseFenStrTests(TestCase):
     """Tests GameState._parse_fen_str()."""
 

@@ -1,5 +1,6 @@
-from unittest import TestCase
+import subprocess
 from subprocess import check_output, CalledProcessError
+from unittest import TestCase
 
 
 class Task1Tests(TestCase):
@@ -34,10 +35,11 @@ class Task1Tests(TestCase):
     def test_no_fen_file_provided(self):
         """If the user does not provide a fen file, show usage."""
         try:
-            actual = check_output(['python3', '1_show.py'])
+            actual = check_output(['python3', '1_show.py'],
+                                  stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            usage = b'Usage: python 1_show.py <path/to/fen/file.fen>'
+            usage = b'Usage: python 1_show.py <path/to/fen/file.fen>\n'
             self.assertEqual(err.output, usage)
 
     def test_invalid_file_path(self):
@@ -46,10 +48,10 @@ class Task1Tests(TestCase):
         """
         try:
             args = ['python3', '1_show.py', 'tests/fen/idontexist.fen']
-            actual = check_output(args)
+            actual = check_output(args, stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            message = 'FEN File not found: tests/fen/idontexist.fen'
+            message = b'FEN File not found: tests/fen/idontexist.fen\n\n'
             self.assertEqual(err.output, message)
 
     def test_invalid_fen_file(self):
@@ -58,10 +60,10 @@ class Task1Tests(TestCase):
         """
         try:
             args = ['python3', '1_show.py', 'tests/fen/invalid.fen']
-            actual = check_output(args)
+            actual = check_output(args, stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            message = 'FEN File invalid: tests/fen/invalid.fen'
+            message = b'FEN File invalid: tests/fen/invalid.fen\n\n'
             self.assertEqual(err.output, message)
 
 
@@ -81,10 +83,11 @@ class Task2Tests(TestCase):
     def test_no_fen_file_provided(self):
         """If the user does not provide a fen file, show usage."""
         try:
-            actual = check_output(['python3', '1_show.py'])
+            actual = check_output(['python3', '2_move.py'],
+                                  stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            usage = b'Usage: python 2_move.py <path/to/fen/file.fen>'
+            usage = b'Usage: python 2_move.py <path/to/fen/file.fen>\n'
             self.assertEqual(err.output, usage)
 
     def test_invalid_file_path(self):
@@ -93,10 +96,10 @@ class Task2Tests(TestCase):
         """
         try:
             args = ['python3', '2_move.py', 'tests/fen/idontexist.fen']
-            actual = check_output(args)
+            actual = check_output(args, stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            message = 'FEN File not found: tests/fen/idontexist.fen'
+            message = b'FEN File not found: tests/fen/idontexist.fen\n'
             self.assertEqual(err.output, message)
 
     def test_invalid_fen_file(self):
@@ -105,10 +108,10 @@ class Task2Tests(TestCase):
         """
         try:
             args = ['python3', '2_move.py', 'tests/fen/invalid.fen']
-            actual = check_output(args)
+            actual = check_output(args, stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            message = 'FEN File invalid: tests/fen/invalid.fen'
+            message = b'FEN File invalid: tests/fen/invalid.fen\n'
             self.assertEqual(err.output, message)
 
 
@@ -149,10 +152,11 @@ rnbqkbnr/1p1ppppp/8/p1p5/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq a6 0 3
     def test_no_fen_file_provided(self):
         """If the user does not provide a fen file, show usage."""
         try:
-            actual = check_output(['python3', 'stretch.py'])
+            actual = check_output(['python3', 'stretch.py'],
+                                  stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            usage = b'Usage: python 1_show.py <path/to/fen/file.fen>'
+            usage = b'Usage: python stretch.py <path/to/fen/file.fen>\n'
             self.assertEqual(err.output, usage)
 
     def test_invalid_file_path(self):
@@ -161,10 +165,10 @@ rnbqkbnr/1p1ppppp/8/p1p5/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq a6 0 3
         """
         try:
             args = ['python3', 'stretch.py', 'tests/fen/idontexist.fen']
-            actual = check_output(args)
+            actual = check_output(args, stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            message = 'FEN File not found: tests/fen/idontexist.fen'
+            message = b'FEN File not found: tests/fen/idontexist.fen\n'
             self.assertEqual(err.output, message)
 
     def test_invalid_fen_file(self):
@@ -173,8 +177,8 @@ rnbqkbnr/1p1ppppp/8/p1p5/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq a6 0 3
         """
         try:
             args = ['python3', 'stretch.py', 'tests/fen/invalid.fen']
-            actual = check_output(args)
+            actual = check_output(args, stderr=subprocess.STDOUT)
             self.fail()
         except CalledProcessError as err:
-            message = 'FEN File invalid: tests/fen/invalid.fen'
+            message = b'FEN File invalid: tests/fen/invalid.fen\n'
             self.assertEqual(err.output, message)

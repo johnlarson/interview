@@ -7,6 +7,11 @@ from collections import OrderedDict
 import requests
 
 
+class InvalidFENFileError(Exception):
+    """Raised when FEN file being parsed is invalid."""
+    pass
+
+
 class GameState:
     """Holds game state information read from a FEN file."""
 
@@ -38,13 +43,17 @@ class GameState:
         Parse the given FEN file and load provided information into the
         GameState object.
         """
-        fen_list = fen_str.split()
-        self._parse_board(fen_list[0])
-        self._parse_turn(fen_list[1])
-        self._parse_castling(fen_list[2])
-        self._parse_en_passant(fen_list[3])
-        self._parse_halfmove_clock(fen_list[4])
-        self._parse_fullmove_number(fen_list[5])
+        try:
+            fen_list = fen_str.split()
+            self._parse_board(fen_list[0])
+            self._parse_turn(fen_list[1])
+            self._parse_castling(fen_list[2])
+            self._parse_en_passant(fen_list[3])
+            self._parse_halfmove_clock(fen_list[4])
+            self._parse_fullmove_number(fen_list[5])
+        except IndexError:
+            raise InvalidFENFileError
+
 
     def _parse_board(self, board_str):
         self.board = {}
@@ -84,7 +93,7 @@ class GameState:
         if en_passant_str == '-':
             self.en_passant = None
         else:
-            self.en_passant = Tuple(en_passant_str)
+            self.en_passant = tuple(en_passant_str)
 
     def _parse_halfmove_clock(self, halfmove_str):
         self.halfmove_clock = int(halfmove_str)
