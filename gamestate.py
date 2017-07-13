@@ -14,7 +14,7 @@ class GameState:
     COLS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
     # When the board is displayed, each square should display a letter for the
     # piece on the square. If there is no piece, that space should be filled
-    # with a single space character.
+    # with a single space character, denoted by the constant `EMPTY`.
     EMPTY = ' '
 
     def __init__(self, fen_file_path=None):
@@ -187,8 +187,8 @@ class GameState:
     @property
     def board_text(self):
         """
-        Property. The to be printed to the output in order to form a
-        picture of the chess board.
+        Property. The text to be printed to the output in order to form
+        a picture of the chess board.
         """
         ret = ''
         ret += self._get_enclosing_line()

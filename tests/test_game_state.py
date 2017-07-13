@@ -10,7 +10,8 @@ class InitTests(TestCase):
 
     def test_no_fen_file_path(self):
         """
-        If no fen file is provided, should raise NoFENFileProvidedError.
+        If no fen file is provided, should initialize game state to
+        match start-of-game state.
         """
         ...
 
