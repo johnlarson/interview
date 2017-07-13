@@ -32,3 +32,12 @@ python 2_move.py <FEN string>
 cd <coding challenge code directory>
 python stretch.py <FEN string>
 ```
+
+## Running tests
+
+The tests are in the 'tests' folder. I mostly ran them using pytest:
+
+```
+cd <coding challenge code directory>
+PYTHONPATH=$(pwd) pytest
+```
