@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import gamestate
-from gamestate import GameState
+from gamestate import GameState, InvalidFENFileError
 
 
 class InitTests(TestCase):
@@ -36,18 +36,47 @@ class ParseFenStrTests(TestCase):
 
     def test_valid_input(self):
         """Should correctly parse a valid fen string."""
-        ...
+        fen = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
+        g = GameState()
+        g._parse_fen_str(fen)
+        expected = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        self.assertEqual(g.board, expected)
+        # If I were to continue working on the tests, I would check other
+        # aspects of the game state here.
 
     def test_invalid_fen_string(self):
         """
         If fen string is not valid fen, should raise
         InvalidFENFileError.
         """
-        ...
+        with self.assertRaises(InvalidFENFileError):
+            GameState('tests/fen/invalid.fen')
 
     def test_parse_positions(self):
         """Should correctly parse positions of pieces on board."""
-        ...
+        fen = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
+        g = GameState()
+        g._parse_fen_str(fen)
+        expected = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        self.assertEqual(g.board, expected)
 
     def test_whites_turn(self):
         """
