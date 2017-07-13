@@ -28,7 +28,7 @@ class InitTests(TestCase):
     def test_invalid_file_path(self):
         """If file path is invalid, should raise FileNotFoundError."""
         with self.assertRaises(FileNotFoundError):
-            GameState('tests/fen/idontexist.fen')
+            GameState('idontexist.fen')
 
 
 class ParseFenStrTests(TestCase):
@@ -58,8 +58,9 @@ class ParseFenStrTests(TestCase):
         If fen string is not valid fen, should raise
         InvalidFENFileError.
         """
+        g = GameState()
         with self.assertRaises(InvalidFENFileError):
-            GameState('tests/fen/invalid.fen')
+            g._parse_fen_str('asdf 32ds 0-=fe')
 
     def test_parse_positions(self):
         """Should correctly parse positions of pieces on board."""
