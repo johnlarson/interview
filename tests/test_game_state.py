@@ -50,8 +50,14 @@ class ParseFenStrTests(TestCase):
             'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
         }
         self.assertEqual(g.board, expected)
-        # If I were to continue working on the tests, I would check other
-        # aspects of the game state here.
+        self.assertEqual(g.player, 'b')
+        self.assertTrue(g.castle_white_king)
+        self.assertTrue(g.castle_white_queen)
+        self.assertTrue(g.castle_black_king)
+        self.assertTrue(g.castle_black_queen)
+        self.assertIsNone(g.en_passant)
+        self.assertEqual(g.halfmove_clock, 1)
+        self.assertEqual(g.fullmove_number, 2)
 
     def test_invalid_fen_string(self):
         """
@@ -61,23 +67,6 @@ class ParseFenStrTests(TestCase):
         g = GameState()
         with self.assertRaises(InvalidFENFileError):
             g._parse_fen_str('asdf 32ds 0-=fe')
-
-    def test_parse_positions(self):
-        """Should correctly parse positions of pieces on board."""
-        fen = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
-        g = GameState()
-        g._parse_fen_str(fen)
-        expected = {
-            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
-            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
-            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
-            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
-            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
-            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
-            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
-            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
-        }
-        self.assertEqual(g.board, expected)
 
     def test_whites_turn(self):
         """
@@ -124,16 +113,8 @@ class ParseFenStrTests(TestCase):
         """Should correctly parse when en passant field is '-'."""
         ...
 
-    def test_halfmove_clock(self):
-        """Should correctly parse the halfmove clock."""
-        ...
-
     def test_halfmove_clock_multi_digit(self):
         """Should correctly parse multi-digit halfmove clock."""
-        ...
-
-    def test_fullmove_number(self):
-        """Should correctly parse the fullmove number."""
         ...
 
     def test_fullmove_number_multi_digit(self):
@@ -149,11 +130,27 @@ class FenTests(TestCase):
         Should return a correct fen-formatted description of the current
         game state.
         """
-        ...
-
-    def test_correctly_display_board(self):
-        """Board state should be correct in returned fen string."""
-        ...
+        g = GameState()
+        g.board = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        g.player = 'b'
+        g.castle_white_king = True
+        g.castle_white_queen = True
+        g.castle_black_king = True
+        g.castle_black_queen = True
+        g.en_passant = None
+        g.halfmove_clock = 1
+        g.fullmove_number = 2
+        exp = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
+        self.assertEqual(g.fen, exp)
 
     def test_whites_turn(self):
         """
@@ -201,16 +198,8 @@ class FenTests(TestCase):
         """
         ...
 
-    def test_halfmove_clock(self):
-        """Should correctly display the halfmove clock."""
-        ...
-
     def test_halfmove_clock_multi_digit(self):
         """Should correctly display a multi-digit halfmove clock."""
-        ...
-
-    def test_fullmove_number(self):
-        """Should correctly display the fullmove number."""
         ...
 
     def test_fullmove_number_multi_digit(self):
@@ -226,7 +215,38 @@ class BoardTextTests(TestCase):
         Should correctly display the board based on the state of the
         GameState object.
         """
-        ...
+        g = GameState()
+        g.board = {
+            'a': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+            'b': {'1': 'N', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'c': {'1': 'B', '2': 'P', '3': ' ', '4': ' ', '5': 'p', '6': ' ', '7': ' ', '8': 'b'},  # noqa
+            'd': {'1': 'Q', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'q'},  # noqa
+            'e': {'1': 'K', '2': ' ', '3': ' ', '4': 'P', '5': ' ', '6': ' ', '7': 'p', '8': 'k'},  # noqa
+            'f': {'1': 'B', '2': 'P', '3': 'N', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'b'},  # noqa
+            'g': {'1': ' ', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'n'},  # noqa
+            'h': {'1': 'R', '2': 'P', '3': ' ', '4': ' ', '5': ' ', '6': ' ', '7': 'p', '8': 'r'},  # noqa
+        }
+        expected = """
+  ---------------------------------
+8 | r | n | b | q | k | b | n | r |
+  |-------------------------------|
+7 | p | p |   | p | p | p | p | p |
+  |-------------------------------|
+6 |   |   |   |   |   |   |   |   |
+  |-------------------------------|
+5 |   |   | p |   |   |   |   |   |
+  |-------------------------------|
+4 |   |   |   |   | P |   |   |   |
+  |-------------------------------|
+3 |   |   |   |   |   | N |   |   |
+  |-------------------------------|
+2 | P | P | P | P |   | P | P | P |
+  |-------------------------------|
+1 | R | N | B | Q | K | B |   | R |
+  ---------------------------------
+    a   b   c   d   e   f   g   h
+""".strip('\n')  # the outer newlines are only there to make this code readable
+        self.assertEqual(g.board_text, expected)
 
 
 class TakeTurnTests(TestCase):
