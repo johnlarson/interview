@@ -41,3 +41,9 @@ The tests are in the 'tests' folder. I mostly ran them using pytest:
 cd <coding challenge code directory>
 PYTHONPATH=$(pwd) pytest
 ```
+
+# Some notes
+
+After doing both tasks and the stretch goal, I added functionality that updates aspects of the game state related to the other fields in the FEN file. Because of this, once a turn is taken, the other fields won't match the examples given in the challenge description. However, they should accurately represent the new game state after the turn has been taken.
+
+I've written a lot of stubs for tests that I thought would be good for this project. There's a fair number of them, and I haven't implemented all of them, but I left the stubs to give an idea of thoughts I had about other tests that could be implemented.
