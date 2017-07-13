@@ -230,7 +230,7 @@ class GameState:
 
     def _get_col_label_line(self):
         """Returns the text needed to form the column labels."""
-        return '    a   b   c   d   e   f   g   h\n'
+        return '    a   b   c   d   e   f   g   h'
 
     def take_turn(self):
         """
